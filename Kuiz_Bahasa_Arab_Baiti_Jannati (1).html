@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>اختبار بيتي جنتي</title>
+<style>
+*{box-sizing:border-box}body{margin:0;min-height:100vh;font-family:Arial,Tahoma,sans-serif;background:linear-gradient(135deg,#fff7ec,#eef8ee);display:flex;align-items:center;justify-content:center;padding:20px;color:#45404a}.app{width:min(960px,100%);background:#fff;border-radius:28px;box-shadow:0 16px 50px rgba(80,70,50,.16);overflow:hidden}header{padding:22px;background:linear-gradient(90deg,#f9d9df,#dff0dc);text-align:center}h1{margin:0 0 6px;font-size:clamp(28px,5vw,42px)}header p{margin:0;font-size:18px;color:#6d6870}.content{padding:26px}.progress-info{display:flex;justify-content:space-between;color:#777}.bar{height:12px;background:#eee;border-radius:20px;overflow:hidden;margin:8px 0 18px}.bar div{height:100%;background:#9bcf9a;transition:.35s}.question-card{background:#fffaf3;border:2px solid #f2e7d6;border-radius:24px;padding:22px;text-align:center}.visual{width:min(430px,100%);height:230px;margin:0 auto 18px;border-radius:20px;background:#f4efe5;overflow:hidden}.visual svg{width:100%;height:100%}.question-row{display:flex;align-items:center;justify-content:center;gap:12px}.question{font-size:clamp(28px,5vw,40px);font-weight:700;margin:8px 0 18px}.speak{border:0;background:#eadcff;width:54px;height:54px;border-radius:50%;font-size:25px;cursor:pointer}.answers{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.answer{border:2px solid #ddd;background:#fff;border-radius:18px;padding:16px 12px;font-size:clamp(19px,3vw,25px);font-weight:700;cursor:pointer;min-height:72px}.answer:hover{border-color:#9bcf9a;background:#f7fff6}.answer.correct{background:#dff4df;border-color:#77bd77}.answer.wrong{background:#ffe3e3;border-color:#e58c8c}.feedback{min-height:52px;margin-top:15px;font-size:24px;font-weight:700}.good{color:#3e9250}.try{color:#c56a6a}.next{display:none;border:0;background:#7fb67e;color:white;padding:13px 30px;border-radius:16px;font-size:20px;font-weight:700;cursor:pointer;margin:0 auto}.start,.result{text-align:center;padding:25px 10px}.house{font-size:72px}.start h2,.result h2{font-size:32px}.start p,.result p{font-size:20px;line-height:1.7;color:#666}.primary{border:0;background:#8fbd8d;color:#fff;padding:15px 38px;border-radius:17px;font-size:21px;font-weight:700;cursor:pointer}.score{font-size:68px;font-weight:800;color:#6e9e6d;margin:12px}.note{text-align:center;margin-top:15px;color:#888;font-size:14px}@media(max-width:700px){.answers{grid-template-columns:1fr}.content{padding:16px}.visual{height:190px}}
+</style>
+</head>
+<body>
+<div class="app">
+<header><h1>اختبار بيتي جنتي</h1><p>مراجعة المفردات</p></header>
+<main class="content" id="main"></main>
+</div>
+<script>
+const qs=[
+{q:"ما هذه؟",a:"هذه غرفة النوم",c:["هذه غرفة النوم","هذا الحمام","هذه كنبة"],t:"bed"},
+{q:"ما هذا؟",a:"هذا الحمام",c:["هذه غرفة الجلوس","هذا الحمام","هذا مخزن"],t:"bath"},
+{q:"ما هذه؟",a:"هذه غرفة الجلوس",c:["هذه طاولة","هذه غرفة الجلوس","هذا الحمام"],t:"living"},
+{q:"ما هذه؟",a:"هذه طاولة",c:["هذه كنبة","هذا مخزن","هذه طاولة"],t:"table"},
+{q:"ما هذه؟",a:"هذه كنبة",c:["هذه كنبة","هذه غرفة النوم","هذه طاولة"],t:"sofa"},
+{q:"ما هذا؟",a:"هذا مخزن",c:["هذا مخزن","هذه غرفة الجلوس","هذا الحمام"],t:"storage"}
+];
+let n=0,score=0,done=false;
+function sh(a){return [...a].sort(()=>Math.random()-.5)}
+function speak(t){if(!speechSynthesis){alert("Sila guna Google Chrome untuk fungsi suara.");return}speechSynthesis.cancel();let u=new SpeechSynthesisUtterance(t);u.lang="ar-SA";u.rate=.78;u.pitch=1.05;let v=speechSynthesis.getVoices().find(x=>x.lang&&x.lang.toLowerCase().startsWith("ar"));if(v)u.voice=v;speechSynthesis.speak(u)}
+function art(t){
+let s='stroke="#6b6258" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"';
+if(t=="bed")return `<svg viewBox="0 0 500 260"><rect x="35" y="30" width="430" height="200" rx="20" fill="#f7eadf"/><rect x="110" y="65" width="230" height="125" rx="18" fill="#fff"/><rect x="110" y="115" width="230" height="75" rx="14" fill="#e8c7bd"/><rect x="135" y="75" width="75" height="45" rx="12" fill="#f3f0ea"/><rect x="240" y="75" width="75" height="45" rx="12" fill="#f3f0ea"/><rect x="365" y="55" width="45" height="120" rx="6" fill="#b98250"/><text x="250" y="225" text-anchor="middle" font-size="22">🛏️</text></svg>`;
+if(t=="bath")return `<svg viewBox="0 0 500 260"><rect x="35" y="30" width="430" height="200" rx="20" fill="#e8eef0"/><rect x="105" y="75" width="70" height="80" rx="20" fill="#fff" ${s}/><ellipse cx="140" cy="105" rx="25" ry="17" fill="#cfe8ef"/><rect x="285" y="75" width="105" height="90" rx="12" fill="#fff" ${s}/><circle cx="338" cy="115" r="25" fill="#d5eef4"/><text x="250" y="220" text-anchor="middle" font-size="23">🚿 🚽</text></svg>`;
+if(t=="living")return `<svg viewBox="0 0 500 260"><rect x="35" y="30" width="430" height="200" rx="20" fill="#f5eee2"/><rect x="125" y="70" width="250" height="75" rx="25" fill="#ead9c5" ${s}/><ellipse cx="250" cy="180" rx="72" ry="30" fill="#c99a68" ${s}/><circle cx="250" cy="180" r="17" fill="#9dbb82"/><text x="250" y="225" text-anchor="middle" font-size="23">🛋️</text></svg>`;
+if(t=="table")return `<svg viewBox="0 0 500 260"><rect x="35" y="30" width="430" height="200" rx="20" fill="#f7eadb"/><rect x="125" y="75" width="250" height="105" rx="15" fill="#b98250" ${s}/><rect x="145" y="65" width="55" height="40" rx="10" fill="#e7d8c5" ${s}/><rect x="300" y="65" width="55" height="40" rx="10" fill="#e7d8c5" ${s}/><text x="250" y="225" text-anchor="middle" font-size="23">🪑</text></svg>`;
+if(t=="sofa")return `<svg viewBox="0 0 500 260"><rect x="35" y="30" width="430" height="200" rx="20" fill="#f5eee4"/><rect x="105" y="90" width="290" height="85" rx="25" fill="#e8d8c4" ${s}/><rect x="120" y="65" width="115" height="65" rx="22" fill="#f0e5d5" ${s}/><rect x="265" y="65" width="115" height="65" rx="22" fill="#f0e5d5" ${s}/><text x="250" y="225" text-anchor="middle" font-size="23">🛋️</text></svg>`;
+return `<svg viewBox="0 0 500 260"><rect x="35" y="30" width="430" height="200" rx="20" fill="#eee8df"/><rect x="100" y="65" width="300" height="125" rx="12" fill="#d9c1a5" ${s}/><rect x="125" y="85" width="80" height="45" rx="7" fill="#b9956d"/><rect x="225" y="85" width="80" height="45" rx="7" fill="#c9a77e"/><rect x="325" y="85" width="45" height="70" rx="7" fill="#79a8aa"/><text x="250" y="220" text-anchor="middle" font-size="23">📦</text></svg>`;
+}
+function start(){n=0;score=0;render()}
+function home(){document.getElementById("main").innerHTML=`<section class="start"><div class="house">🏠</div><h2>هيا نختبر!</h2><p>اختبر معلوماتك في 6 مفردات عن البيت.<br>اختر الإجابة الصحيحة لكل سؤال.</p><button class="primary" onclick="start()">ابدأ الاختبار</button></section>`}
+function render(){
+  done=false;
+  let x=qs[n], choices=sh(x.c);
+  document.getElementById("main").innerHTML=
+    `<div class="progress-info"><span>السؤال ${n+1} من 6</span><span>النتيجة: ${score}</span></div>
+     <div class="bar"><div style="width:${n/6*100}%"></div></div>
+     <section class="question-card">
+       <div class="visual">${art(x.t)}</div>
+       <div class="question-row">
+         <div class="question">${x.q}</div>
+         <button class="speak" id="speakBtn" type="button">🔊</button>
+       </div>
+       <div class="answers" id="answers"></div>
+       <div id="fb" class="feedback"></div>
+       <button id="next" class="next" type="button">${n==5?"النتيجة":"السؤال التالي"} ➜</button>
+     </section>
+     <div class="note">اضغط 🔊 لسماع السؤال بوضوح.</div>`;
+
+  document.getElementById("speakBtn").addEventListener("click", ()=>speak(x.q));
+
+  const box=document.getElementById("answers");
+  choices.forEach(choice=>{
+    const b=document.createElement("button");
+    b.type="button";
+    b.className="answer";
+    b.textContent=choice;
+    b.addEventListener("click", ()=>ans(b, choice));
+    box.appendChild(b);
+  });
+
+  document.getElementById("next").addEventListener("click", next);
+}
+
+function ans(btn,c){
+  if(done)return;
+  done=true;
+
+  const buttons=document.querySelectorAll(".answer");
+  buttons.forEach(b=>b.disabled=true);
+
+  const x=qs[n];
+  const fb=document.getElementById("fb");
+
+  if(c===x.a){
+    btn.classList.add("correct");
+    fb.textContent="أحسنت!";
+    fb.className="feedback good";
+    score++;
+  }else{
+    btn.classList.add("wrong");
+    fb.textContent="حاول مرة أخرى!";
+    fb.className="feedback try";
+    buttons.forEach(b=>{
+      if(b.textContent===x.a) b.classList.add("correct");
+    });
+  }
+
+  const nextBtn=document.getElementById("next");
+  nextBtn.style.display="block";
+
+  // Automatically move to the next question after the feedback.
+  setTimeout(()=>{
+    if(n<5){
+      n++;
+      render();
+    }else{
+      result();
+    }
+  },1400);
+}
+
+function next(){if(n<5){n++;render()}else result()}
+function result(){document.getElementById("main").innerHTML=`<section class="result"><div class="house">🏠✨</div><h2>أحسنتم!</h2><div class="score">${score} / 6</div><p>${score==6?"ممتاز!":score>=4?"أحسنتم! واصلوا التعلم!":"حاولوا مرة أخرى!"}</p><p><strong>بارك الله فيكم!</strong></p><button class="primary" onclick="start()">أعد الاختبار</button></section>`}
+home();
+</script>
+</body>
+</html>
